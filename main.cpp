@@ -1,4 +1,8 @@
+#include "sudoku.h"
+
 int main()
 {
-    return 0;
+    Sudoku sudoku(6);
+    sudoku.generateEmptyGrid();
+    std::cout << sudoku;
 }
