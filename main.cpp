@@ -2,8 +2,9 @@
 
 int main()
 {
-    Sudoku sudoku(6, 3);
-    sudoku.generateEmptyGrid();
+    Sudoku sudoku(1, 3);
+    sudoku.genrateStratingGrid();
     std::cout << sudoku;
+
     return 0;
 }

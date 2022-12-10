@@ -1,4 +1,5 @@
-
+//is it a lot ? yes
+//is it too mutch ? maybe
 #include <iostream>
 #include <string>
 #include <vector>
@@ -17,13 +18,17 @@ public:
 
     //methods
     friend std::ostream& operator<<(std::ostream& os, const Sudoku& sudoku);
-    void generateEmptyGrid();
+    void generateEmptyGridWithCasefillInItToPlatTheGameSoItsNotReallyEmpltyWithAnNonWorkingWay();
+    void genrateStratingGrid();
+    bool solve();
+    bool isSolved() const;
+    void playTheGame();
+    void setCase(unsigned int x, unsigned int y, unsigned int value);
 
 private:
 
     //private methods
     unsigned int getCase(unsigned int x, unsigned int y) const;
-    void setCase(unsigned int x, unsigned int y, unsigned int value);
     bool caseIsCorrect(unsigned int x, unsigned int y, unsigned int value) const;
     bool checkElementarySquare(unsigned int x, unsigned int y, unsigned int value) const;
     bool checkLine(unsigned int x, unsigned int y, unsigned int value) const;
@@ -33,5 +38,4 @@ private:
     unsigned int _difficulty;
     unsigned int _size;
     std::vector<unsigned int> _grid;
-    bool isSolved();
 };
