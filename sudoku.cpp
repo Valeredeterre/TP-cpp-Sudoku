@@ -3,7 +3,7 @@
 Sudoku::Sudoku()
     : _difficulty(1), _size(3)
 {
-    _grid.resize(pow(_size, 4)); // creartion of an grid of 'size' by 'size' squares with an dimention of 'size' by 'size'
+    _grid.resize(pow(_size, 4), 0); // creartion of an grid of 'size' by 'size' squares with an dimention of 'size' by 'size'
 }
 
 Sudoku::Sudoku(unsigned int difficulty)
@@ -112,61 +112,48 @@ void Sudoku::generateEmptyGridWithCasefillInItToPlatTheGameSoItsNotReallyEmpltyW
             x = rand() % (_size * _size);
             y = rand() % (_size * _size);
             value = rand() % (_size * _size) + 1;
-
         } while (!caseIsCorrect(x, y, value));
         setCase(x, y, value);
     }
 }
 
-//! for the next method https://stackoverflow.com/questions/6924216/how-to-generate-sudoku-boards-with-unique-solutions#:~:text=Start%20with%20a%20complete%2C%20valid,using%20a%20fast%20backtracking%20solver.
-void Sudoku::genrateStratingGrid() //! cancel due to brain overload but at the end it's supposed to work
+void Sudoku::genrateStartingGrid()
 {
-    srand(time(nullptr)); // initialisation of the randomizer
+    srand(time(NULL)); // initialisation of the randomizer
 
+    int i = 0;
+    for (int n = 0; n < pow(_size, 4); n++)
+    {
+        if (n % (_size * _size) == 0 && n != 0)
+            i += _size;
+        if (n % (_size*_size*_size) == 0 && n != 0)
+            i++;
+        _grid.at(n) = n + i;
+    }
+
+    for (int n = 0; n < pow(_size, 4); n++)
+    {
+        _grid.at(n) = _grid.at(n) % (_size * _size) + 1;
+    }
+
+    //remove random numbers to match the difficulty
     std::array<int, 6> possibleValue = {50, 45, 40, 35, 30, 25};
     if (_difficulty > 6)
         _difficulty = 6;
     if (_difficulty < 1)
         _difficulty = 1;
     unsigned int amountToGenerate = possibleValue.at(_difficulty - 1);
-
-    _grid = 
-    {
-        1,2,3,4,5,6,7,8,9,
-        4,5,6,7,8,9,1,2,3,
-        7,8,9,1,2,3,4,5,6,
-        2,3,4,5,6,7,8,9,1,
-        5,6,7,8,9,1,2,3,4,
-        8,9,1,2,3,4,5,6,7,
-        3,4,5,6,7,8,9,1,2,
-        6,7,8,9,1,2,3,4,5,
-        9,1,2,3,4,5,6,7,8
-    };
     for (unsigned int i = 0; i < pow(_size,4) - amountToGenerate; i++)
     {
-        unsigned int x = 0, y = 0, value = 0;
+        unsigned int x = 0, y = 0;
         do
         {
             x = rand() % (_size * _size);
             y = rand() % (_size * _size);
-            value = rand() % (_size * _size) + 1;
-
-        } while (getCase(x, y) == 0);
+        }
+        while (getCase(x, y) == 0);
         setCase(x, y, 0);
-    } 
-}
-
-// TODO:
-//? just check if it's full or check if it's right too ? (maybe add the caseIsCorrect method in the get case method to do that)
-bool Sudoku::isSolved() const
-{
-    bool isSolved = true;
-    for (auto it : _grid)
-    {
-        if (it == 0)
-            isSolved = false;
     }
-    return isSolved;
 }
 
 bool Sudoku::solve() //*https://en.wikipedia.org/wiki/Backtracking
@@ -181,7 +168,8 @@ void Sudoku::playTheGame()
     int x, y, value;
     do
     {
-        std::cout << std::endl << *this << std::endl;
+        std::cout << std::endl
+                  << *this << std::endl;
         do
         {
             std::cout << "Enter x: ";
@@ -204,3 +192,30 @@ void Sudoku::playTheGame()
         setCase(x, y, value);
     } while (!isSolved());
 }
+
+bool Sudoku::isSolved()
+{
+    bool full = true;
+    for (auto i : _grid)
+        if (i == 0)
+            return false;
+    return checkifSudokuIsCorrect();
+}
+
+bool Sudoku::checkifSudokuIsCorrect()
+{
+    for (unsigned int i = 0; i < _size * _size; ++i)
+    {
+        for (unsigned int j = 0; j < _size * _size; ++j)
+        {
+            int tmp = getCase(i, j);
+            setCase(i, j, 0);
+            if (!caseIsCorrect(i, j, tmp))
+                return false;
+            setCase(i, j, tmp);
+        }
+    }
+    return true;
+}
+
+

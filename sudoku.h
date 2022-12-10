@@ -19,14 +19,14 @@ public:
     //methods
     friend std::ostream& operator<<(std::ostream& os, const Sudoku& sudoku);
     void generateEmptyGridWithCasefillInItToPlatTheGameSoItsNotReallyEmpltyWithAnNonWorkingWay();
-    void genrateStratingGrid();
+    void genrateStartingGrid();
     bool solve();
-    bool isSolved() const;
+    bool isSolved();
     void playTheGame();
+    bool checkifSudokuIsCorrect();
     void setCase(unsigned int x, unsigned int y, unsigned int value);
 
 private:
-
     //private methods
     unsigned int getCase(unsigned int x, unsigned int y) const;
     bool caseIsCorrect(unsigned int x, unsigned int y, unsigned int value) const;

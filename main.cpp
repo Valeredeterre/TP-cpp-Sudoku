@@ -2,9 +2,10 @@
 
 int main()
 {
-    Sudoku sudoku(1, 3);
-    sudoku.genrateStratingGrid();
+    Sudoku sudoku(5, 7);
+    sudoku.genrateStartingGrid();
     std::cout << sudoku;
+    std::cout << "Sudoku is " << (sudoku.checkifSudokuIsCorrect() ? "correct" : "incorrect") << std::endl;
 
     return 0;
 }
