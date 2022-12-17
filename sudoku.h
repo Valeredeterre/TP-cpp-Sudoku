@@ -1,12 +1,4 @@
-//is it a lot ? yes
-//is it too mutch ? maybe
-#include <iostream>
-#include <string>
-#include <vector>
-#include <array>
-#include <cmath>
-#include <time.h>
-#include <stdlib.h>
+#include "grid.h"
 
 class Sudoku
 {
@@ -18,7 +10,7 @@ public:
 
     //methods
     friend std::ostream& operator<<(std::ostream& os, const Sudoku& sudoku);
-    void generateEmptyGridWithCasefillInItToPlatTheGameSoItsNotReallyEmpltyWithAnNonWorkingWay();
+    
     void genrateStartingGrid();
     bool solve();
     bool isSolved();
@@ -33,9 +25,13 @@ private:
     bool checkElementarySquare(unsigned int x, unsigned int y, unsigned int value) const;
     bool checkLine(unsigned int x, unsigned int y, unsigned int value) const;
     bool checkColumn(unsigned int x, unsigned int y, unsigned int value) const;
+    void swapColumns(unsigned int column1, unsigned int column2);
+    void swapLines(unsigned int line1, unsigned int line2);
+    void shuffleGrid();
+    bool placeRemarquableNumbers();
 
     //private variables ┬┴┬┴┤ ͜ʖ ͡°) ├┬┴┬┴
     unsigned int _difficulty;
     unsigned int _size;
-    std::vector<unsigned int> _grid;
+    Grid _grid;
 };
