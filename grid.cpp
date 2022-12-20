@@ -57,3 +57,105 @@ std::vector<unsigned int>& Grid::getGrid()
 {
     return _grid;
 }
+
+unsigned int Grid::lastMissingNumber(unsigned int x, unsigned int y)
+{
+    unsigned int missingInRow = lastMissingInRow(x);
+    unsigned int missingInColumn = lastMissingInColumn(y);
+    unsigned int missingInSquare = lastMissingInSquare(x, y);
+
+    if (missingInRow != 0)
+    {
+        return (missingInRow);
+    }
+    else if (missingInColumn != 0)
+    {
+        return missingInColumn;
+    }
+    else if (missingInSquare != 0)
+    {
+        return missingInSquare;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
+unsigned int Grid::lastMissingInRow(unsigned int x)
+{
+    std::vector<unsigned int> numbers;
+    for (unsigned int i = 0; i < _size * _size; i++)
+        numbers.push_back(i + 1);
+
+    for (unsigned int i = 0; i < _size * _size; i++)
+    {
+        for (unsigned int j = 0; j < numbers.size(); j++)
+        {
+            if (numbers.at(j) == getCase(i, x))
+            {
+                numbers.erase(numbers.begin() + j);
+                break;
+            }
+        }
+    }
+
+    if (numbers.size() == 1)
+        return numbers.at(0);
+    else
+        return 0;
+}
+
+unsigned int Grid::lastMissingInColumn(unsigned int x)
+{
+    std::vector<unsigned int> numbers;
+    for (unsigned int i = 0; i < _size * _size; i++)
+        numbers.push_back(i + 1);
+
+    for (unsigned int i = 0; i < _size * _size; i++)
+    {
+        for (unsigned int j = 0; j < numbers.size(); j++)
+        {
+            if (numbers.at(j) == getCase(x, i))
+            {
+                numbers.erase(numbers.begin() + j);
+                break;
+            }
+        }
+    }
+
+    if (numbers.size() == 1)
+        return numbers.at(0);
+    else
+        return 0;
+}
+
+unsigned int Grid::lastMissingInSquare(unsigned int x, unsigned int y)
+{
+    std::vector<unsigned int> numbers;
+    for (unsigned int i = 0; i < _size * _size; i++)
+        numbers.push_back(i + 1);
+
+    unsigned int squareX = x / _size;
+    unsigned int squareY = y / _size;
+
+    for (unsigned int i = 0; i < _size; i++)
+    {
+        for (unsigned int j = 0; j < _size; j++)
+        {
+            for (unsigned int k = 0; k < numbers.size(); k++)
+            {
+                if (numbers.at(k) == getCase(squareX * _size + i, squareY * _size + j))
+                {
+                    numbers.erase(numbers.begin() + k);
+                    break;
+                }
+            }
+        }
+    }
+
+    if (numbers.size() == 1)
+        return numbers.at(0);
+    else
+        return 0;
+}

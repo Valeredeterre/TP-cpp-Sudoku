@@ -88,7 +88,7 @@ void Sudoku::genrateStartingGrid()
     }
 
     shuffleGrid();
-
+/*
     // remove random numbers to match the difficulty
     std::array<int, 6> possibleValue = {50, 45, 40, 35, 30, 25};
     if (_difficulty > 6)
@@ -106,7 +106,7 @@ void Sudoku::genrateStartingGrid()
         }
         while (getCase(x, y) == 0);
         setCase(x, y, 0);
-    }
+    }*/
 }
 
 void Sudoku::playTheGame() //! not usefull and coded awfully but it's fun
@@ -189,34 +189,37 @@ void Sudoku::shuffleGrid()
 {
     int sc = 0;
     int sl = 0;
-    for(int i = 0; i < pow(_size, 4); i++)
+    for(int i = 0; i < pow(_size, 2); i++)
     {
         int x1 = rand() % (_size * _size);
         int x2 = rand() % (_size * _size);
-        bool correct = abs(x1 - x2) < _size;
+        bool correct = (abs(x1 - x2) < _size )&& (x1 != x2 )&& (x1/_size == x2/_size);
 
-        if(rand() % 1 == 0 && correct)
+        if(correct)
         {
             swapLines(x1, x2);
-            sl++;
-        }
-        else
-        {   
+            std::cout << "swap lines " << x1 << " and " << x2 << std::endl;
             swapColumns(x1, x2);
-            sc++;
+            std::cout << "swap columns " << x1 << " and " << x2 << std::endl;
         }
+        else i--;
     }
-    std::cout << "swaped lines: " << sl << std::endl;
-    std::cout << "swaped columns: " << sc << std::endl;
 }
 
 bool Sudoku::placeRemarquableNumbers()
 {
-    for(auto it : _grid.getGrid())
+    unsigned int missing = _grid.lastMissingNumber(0, 0);
+    for(unsigned int x = 0; x < _size * _size; x++)
     {
-        if (it == 0)
+        for(unsigned int y = 0; y < _size * _size; y++)
         {
-
+            missing = _grid.lastMissingNumber(x, y);
+            if(getCase(x, y) == 0 && missing != 0)
+            {
+                setCase(x, y, missing);
+                std::cout << "placed\n";
+                return true;
+            }
         }
     }
     return false;
@@ -224,7 +227,8 @@ bool Sudoku::placeRemarquableNumbers()
 
 bool Sudoku::solve()
 {
-    do {} while (placeRemarquableNumbers());
+    int n = 0;
+    do {std::cout << "easy case placed n°: " << n << "\n";n++;} while (placeRemarquableNumbers());
     if (isSolved())
         return true;
     else

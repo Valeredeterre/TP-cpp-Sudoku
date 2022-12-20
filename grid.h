@@ -15,7 +15,11 @@ public:
     void setCase(unsigned int x, unsigned int y, unsigned int value);
     void at(unsigned int n);
     std::vector<unsigned int>& getGrid();
+    unsigned int lastMissingNumber(unsigned int x, unsigned int y);
 private:
+    unsigned int lastMissingInRow(unsigned int x);
+    unsigned int lastMissingInColumn(unsigned int y);
+    unsigned int lastMissingInSquare(unsigned int x, unsigned int y);
     unsigned int _size;
     std::vector<unsigned int> _grid;
 };
