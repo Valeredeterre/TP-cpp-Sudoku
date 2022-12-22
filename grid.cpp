@@ -58,104 +58,94 @@ std::vector<unsigned int>& Grid::getGrid()
     return _grid;
 }
 
-unsigned int Grid::lastMissingNumber(unsigned int x, unsigned int y)
+unsigned int Grid::lastMissingInRow(unsigned int y) const
 {
-    unsigned int missingInRow = lastMissingInRow(x);
-    unsigned int missingInColumn = lastMissingInColumn(y);
-    unsigned int missingInSquare = lastMissingInSquare(x, y);
+    // create a vector with all the possible numbers
+    std::vector<unsigned int> missingNumbers;
+    for (unsigned int i = 1; i <= _size * _size; i++)
+        missingNumbers.push_back(i);
+    missingNumbers.push_back(_size * _size + 1);
+    
+    //sweep the Row and remove the already taken numbers
+    for (unsigned int x = 0; x < _size * _size; x++)
+    {
+        if (find(missingNumbers.begin(), missingNumbers.end(), getCase(x, y)) != missingNumbers.end())
+            missingNumbers.erase(find(missingNumbers.begin(), missingNumbers.end(), getCase(x, y)));
+    }
+    missingNumbers.pop_back();
 
-    if (missingInRow != 0)
-    {
-        return (missingInRow);
-    }
-    else if (missingInColumn != 0)
-    {
-        return missingInColumn;
-    }
-    else if (missingInSquare != 0)
-    {
-        return missingInSquare;
-    }
-    else
-    {
-        return 0;
-    }
+
+    //if only one number is missing return it
+    if(missingNumbers.size() == 1)
+        return missingNumbers.back();
+
+    //if not return 0
+    return 0;
 }
 
-unsigned int Grid::lastMissingInRow(unsigned int x)
+unsigned int Grid::lastMissingInColumn(unsigned int x) const
 {
-    std::vector<unsigned int> numbers;
-    for (unsigned int i = 0; i < _size * _size; i++)
-        numbers.push_back(i + 1);
+    // create a vector with all the possible numbers
+    std::vector<unsigned int> missingNumbers;
+    for (unsigned int i = 1; i <= _size * _size; i++)
+        missingNumbers.push_back(i);
+    missingNumbers.push_back(_size * _size + 1);
 
-    for (unsigned int i = 0; i < _size * _size; i++)
+    //sweep the column and remove the already taken numbers
+    for (unsigned int y = 0; y < _size * _size; y++)
     {
-        for (unsigned int j = 0; j < numbers.size(); j++)
-        {
-            if (numbers.at(j) == getCase(i, x))
-            {
-                numbers.erase(numbers.begin() + j);
-                break;
-            }
-        }
+        if (find(missingNumbers.begin(), missingNumbers.end(), getCase(x, y)) != missingNumbers.end())
+            missingNumbers.erase(find(missingNumbers.begin(), missingNumbers.end(), getCase(x, y)));
     }
+    missingNumbers.pop_back();
 
-    if (numbers.size() == 1)
-        return numbers.at(0);
-    else
-        return 0;
+    //if only one number is missing return it
+    if(missingNumbers.size() == 1)
+        return missingNumbers.back();
+
+    //if not return 0
+    return 0;
 }
 
-unsigned int Grid::lastMissingInColumn(unsigned int x)
+unsigned int Grid::lastMissingInSquare(unsigned int x, unsigned int y) const
 {
-    std::vector<unsigned int> numbers;
-    for (unsigned int i = 0; i < _size * _size; i++)
-        numbers.push_back(i + 1);
+    // create a vector with all the possible numbers
+    std::vector<unsigned int> missingNumbers;
+    for (unsigned int i = 1; i <= _size * _size; i++)
+        missingNumbers.push_back(i);
+    missingNumbers.push_back(_size * _size + 1);
 
-    for (unsigned int i = 0; i < _size * _size; i++)
-    {
-        for (unsigned int j = 0; j < numbers.size(); j++)
-        {
-            if (numbers.at(j) == getCase(x, i))
-            {
-                numbers.erase(numbers.begin() + j);
-                break;
-            }
-        }
-    }
-
-    if (numbers.size() == 1)
-        return numbers.at(0);
-    else
-        return 0;
-}
-
-unsigned int Grid::lastMissingInSquare(unsigned int x, unsigned int y)
-{
-    std::vector<unsigned int> numbers;
-    for (unsigned int i = 0; i < _size * _size; i++)
-        numbers.push_back(i + 1);
-
-    unsigned int squareX = x / _size;
-    unsigned int squareY = y / _size;
-
+    //sweep the square and remove the already taken numbers
     for (unsigned int i = 0; i < _size; i++)
     {
         for (unsigned int j = 0; j < _size; j++)
         {
-            for (unsigned int k = 0; k < numbers.size(); k++)
-            {
-                if (numbers.at(k) == getCase(squareX * _size + i, squareY * _size + j))
-                {
-                    numbers.erase(numbers.begin() + k);
-                    break;
-                }
-            }
+            if (find(missingNumbers.begin(), missingNumbers.end(), getCase(x - x % _size + j, y - y % _size + i)) != missingNumbers.end())
+                missingNumbers.erase(find(missingNumbers.begin(), missingNumbers.end(), getCase(x - x % _size + j, y - y % _size + i)));
         }
     }
+    missingNumbers.pop_back();
 
-    if (numbers.size() == 1)
-        return numbers.at(0);
+    //if only one number is missing return it
+    if(missingNumbers.size() == 1)
+        return missingNumbers.back();
+
+    //if not return 0
+    return 0;
+}
+
+unsigned int Grid::lastMissingNumber(unsigned int x, unsigned int y) const
+{
+    unsigned int lastMissingInRow = this->lastMissingInRow(y);
+    unsigned int lastMissingInColumn = this->lastMissingInColumn(x);
+    unsigned int lastMissingInSquare = this->lastMissingInSquare(x, y);
+
+    if(lastMissingInRow != 0)
+        return lastMissingInRow;
+    else if(lastMissingInColumn != 0)
+        return lastMissingInColumn;
+    else if(lastMissingInSquare != 0)
+        return lastMissingInSquare;
     else
         return 0;
 }

@@ -86,9 +86,8 @@ void Sudoku::genrateStartingGrid()
     {
         _grid.getGrid().at(n) = _grid.getGrid().at(n) % (_size * _size) + 1;
     }
-
     shuffleGrid();
-/*
+
     // remove random numbers to match the difficulty
     std::array<int, 6> possibleValue = {50, 45, 40, 35, 30, 25};
     if (_difficulty > 6)
@@ -106,7 +105,7 @@ void Sudoku::genrateStartingGrid()
         }
         while (getCase(x, y) == 0);
         setCase(x, y, 0);
-    }*/
+    }
 }
 
 void Sudoku::playTheGame() //! not usefull and coded awfully but it's fun
@@ -142,7 +141,6 @@ void Sudoku::playTheGame() //! not usefull and coded awfully but it's fun
 
 bool Sudoku::isSolved()
 {
-    bool full = true;
     for (auto i : _grid.getGrid())
         if (i == 0)
             return false;
@@ -169,7 +167,7 @@ void Sudoku::swapLines(unsigned int line1, unsigned int line2)
 {
     for (unsigned int i = 0; i < _size * _size; ++i)
     {
-        int tmp = getCase(i, line1);
+        unsigned int tmp = getCase(i, line1);
         setCase(i, line1, getCase(i, line2));
         setCase(i, line2, tmp);
     }
@@ -179,7 +177,7 @@ void Sudoku::swapColumns(unsigned int column1, unsigned int column2)
 {
     for (unsigned int i = 0; i < _size * _size; ++i)
     {
-        int tmp = getCase(column1, i);
+        unsigned int tmp = getCase(column1, i);
         setCase(column1, i, getCase(column2, i));
         setCase(column2, i, tmp);
     }
@@ -187,9 +185,7 @@ void Sudoku::swapColumns(unsigned int column1, unsigned int column2)
 
 void Sudoku::shuffleGrid()
 {
-    int sc = 0;
-    int sl = 0;
-    for(int i = 0; i < pow(_size, 2); i++)
+    for(int i = 0; i < pow(_size, 3); i++)
     {
         int x1 = rand() % (_size * _size);
         int x2 = rand() % (_size * _size);
@@ -198,11 +194,16 @@ void Sudoku::shuffleGrid()
         if(correct)
         {
             swapLines(x1, x2);
-            std::cout << "swap lines " << x1 << " and " << x2 << std::endl;
-            swapColumns(x1, x2);
-            std::cout << "swap columns " << x1 << " and " << x2 << std::endl;
         }
-        else i--;
+
+        x1 = rand() % (_size * _size);
+        x2 = rand() % (_size * _size);
+        correct = (abs(x1 - x2) < _size )&& (x1 != x2 )&& (x1/_size == x2/_size);
+
+        if(correct)
+        {
+            swapColumns(x1, x2);
+        }
     }
 }
 
@@ -217,7 +218,7 @@ bool Sudoku::placeRemarquableNumbers()
             if(getCase(x, y) == 0 && missing != 0)
             {
                 setCase(x, y, missing);
-                std::cout << "placed\n";
+                std::cout << "placed " << missing << " at " << x << ", "<< y << "\n";
                 return true;
             }
         }
@@ -228,7 +229,7 @@ bool Sudoku::placeRemarquableNumbers()
 bool Sudoku::solve()
 {
     int n = 0;
-    do {std::cout << "easy case placed n°: " << n << "\n";n++;} while (placeRemarquableNumbers());
+    do {/*ฅ^•ﻌ•^ฅ*/} while (placeRemarquableNumbers());
     if (isSolved())
         return true;
     else

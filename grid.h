@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include <array>
+#include <algorithm>
 #include <cmath>
 #include <time.h>
 #include <stdlib.h>
@@ -15,11 +16,11 @@ public:
     void setCase(unsigned int x, unsigned int y, unsigned int value);
     void at(unsigned int n);
     std::vector<unsigned int>& getGrid();
-    unsigned int lastMissingNumber(unsigned int x, unsigned int y);
+    unsigned int lastMissingNumber(unsigned int x, unsigned int y) const;
 private:
-    unsigned int lastMissingInRow(unsigned int x);
-    unsigned int lastMissingInColumn(unsigned int y);
-    unsigned int lastMissingInSquare(unsigned int x, unsigned int y);
+    unsigned int lastMissingInRow(unsigned int y) const;
+    unsigned int lastMissingInColumn(unsigned int x) const;
+    unsigned int lastMissingInSquare(unsigned int x, unsigned int y) const;
     unsigned int _size;
     std::vector<unsigned int> _grid;
 };
