@@ -11,8 +11,8 @@ public:
     //methods
     friend std::ostream& operator<<(std::ostream& os, const Sudoku& sudoku);
     
-    void genrateStartingGrid();
-    bool solve();
+    void genrateStartingGrid(bool removeValue);
+    void solve();
     bool isSolved();
     void playTheGame();
     bool checkifSudokuIsCorrect();
@@ -23,12 +23,15 @@ private:
     unsigned int getCase(unsigned int x, unsigned int y) const;
     bool caseIsCorrect(unsigned int x, unsigned int y, unsigned int value) const;
     bool checkElementarySquare(unsigned int x, unsigned int y, unsigned int value) const;
-    bool checkLine(unsigned int x, unsigned int y, unsigned int value) const;
+    bool checkRow(unsigned int x, unsigned int y, unsigned int value) const;
     bool checkColumn(unsigned int x, unsigned int y, unsigned int value) const;
     void swapColumns(unsigned int column1, unsigned int column2);
-    void swapLines(unsigned int line1, unsigned int line2);
+    void swapRows(unsigned int row1, unsigned int row2);
+    void swapValue(unsigned int value1, unsigned int value2);
     void shuffleGrid();
     bool placeRemarquableNumbers();
+    bool backtracking();
+    void solveLikeAPersonWouldDoOnAnEasyOne();
 
     //private variables ┬┴┬┴┤ ͜ʖ ͡°) ├┬┴┬┴
     unsigned int _difficulty;
