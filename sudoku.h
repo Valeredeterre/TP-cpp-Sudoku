@@ -17,6 +17,9 @@ public:
     void playTheGame();
     bool checkifSudokuIsCorrect();
     void setCase(unsigned int x, unsigned int y, unsigned int value);
+    bool caseToTest(unsigned int& x,unsigned int& y);
+    bool backtracking();
+    long long int getNbIteration();
 
 private:
     //private methods
@@ -30,11 +33,10 @@ private:
     void swapValue(unsigned int value1, unsigned int value2);
     void shuffleGrid();
     bool placeRemarquableNumbers();
-    bool backtracking();
-    void solveLikeAPersonWouldDoOnAnEasyOne();
 
     //private variables ┬┴┬┴┤ ͜ʖ ͡°) ├┬┴┬┴
     unsigned int _difficulty;
     unsigned int _size;
+    long long int _nbIteration;
     Grid _grid;
 };

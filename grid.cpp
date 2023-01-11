@@ -149,3 +149,9 @@ unsigned int Grid::lastMissingNumber(unsigned int x, unsigned int y) const
     else
         return 0;
 }
+
+
+void Grid::setCase(unsigned int size)
+{
+    _size = size;
+}

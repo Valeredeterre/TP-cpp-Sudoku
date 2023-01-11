@@ -2,14 +2,16 @@
 
 int main()
 {
-    Sudoku sudoku(1, 3);
+    Sudoku sudoku(6, 5);
     sudoku.genrateStartingGrid(true);
     std::cout << sudoku << std::endl;
 
-    sudoku.solve();
+    sudoku.backtracking();
     
     std::cout << sudoku << std::endl;
     std::cout << "the sudoku is " << sudoku.isSolved() << "\n";
+
+    std::cout << sudoku.getNbIteration() << std::endl;
 
     return EXIT_SUCCESS;
 }

@@ -1,23 +1,21 @@
 #include "sudoku.h"
 
-
-
 Sudoku::Sudoku()
-    : _difficulty(1), _size(3)
+    : _difficulty(1), _size(3), _nbIteration(0)
 {
     Grid _grid(3); // creartion of an grid of 'size' by 'size' squares with an dimention of 'size' by 'size'
 }
 
 Sudoku::Sudoku(unsigned int difficulty)
-    : _difficulty(difficulty), _size(3)
+    : _difficulty(difficulty), _size(3), _nbIteration(0)
 {
     Grid _grid(_size); // creartion of an grid of 'size' by 'size' squares with an dimention of 'size' by 'size'
 }
 
 Sudoku::Sudoku(unsigned int difficulty, unsigned int size)
-    : _difficulty(difficulty), _size(size)
+    : _difficulty(difficulty), _size(size), _nbIteration(0)
 {
-    Grid _grid(_size);
+    Grid _grid(size);
 }
 
 unsigned int Sudoku::getCase(unsigned int x, unsigned int y) const
@@ -79,7 +77,7 @@ void Sudoku::genrateStartingGrid(bool removeValue)
     {
         if (n % (_size * _size) == 0 && n != 0)
             i += _size;
-        if (n % (_size*_size*_size) == 0 && n != 0)
+        if (n % (_size * _size * _size) == 0 && n != 0)
             i++;
         _grid.getGrid().at(n) = n + i;
     }
@@ -90,24 +88,24 @@ void Sudoku::genrateStartingGrid(bool removeValue)
     }
     shuffleGrid();
 
-    //remove random numbers to match the difficulty
+    // remove random numbers to match the difficulty
     if (removeValue)
     {
-        std::array<int, 6> possibleValue = {50, 45, 40, 35, 30, 25};
+        std::array<float, 6> possibleValue = {0.8, 0.7, 0.6, 0.5, 0.4, 0.3};
+
         if (_difficulty > 6)
             _difficulty = 6;
         if (_difficulty < 1)
             _difficulty = 1;
-        unsigned int amountToGenerate = possibleValue.at(_difficulty - 1)*pow(_size/3, 3);
-        for (unsigned int i = 0; i < pow(_size,4) - amountToGenerate; i++)
+        unsigned int amountToGenerate = int(possibleValue.at(_difficulty - 1) * pow(_size, 4));
+        for (unsigned int i = 0; i < pow(_size, 4) - 300; i++)
         {
             unsigned int x = 0, y = 0;
             do
             {
                 x = rand() % (_size * _size);
                 y = rand() % (_size * _size);
-            }
-            while (getCase(x, y) == 0);
+            } while (getCase(x, y) == 0);
             setCase(x, y, 0);
         }
     }
@@ -115,10 +113,11 @@ void Sudoku::genrateStartingGrid(bool removeValue)
 
 void Sudoku::playTheGame() //! not usefull and coded awfully but it's fun
 {
-    int x, y, value;
+    unsigned int x, y, value;
     do
     {
-        std::cout << std::endl<< *this << std::endl;
+        std::cout << std::endl
+                  << *this << std::endl;
         do
         {
             do
@@ -126,7 +125,7 @@ void Sudoku::playTheGame() //! not usefull and coded awfully but it's fun
                 std::cout << "Enter x: ";
                 std::cin >> x;
                 std::cout << std::endl;
-            } while (!(x >= 0 && x < 9));
+            } while (!(x >= 0 && x < _size * _size));
             do
             {
                 std::cout << "Enter y: ";
@@ -190,13 +189,13 @@ void Sudoku::swapColumns(unsigned int column1, unsigned int column2)
 
 void Sudoku::swapValue(unsigned int value1, unsigned int value2)
 {
-    for(unsigned int i = 0; i < _size * _size; ++i)
+    for (unsigned int i = 0; i < _size * _size; ++i)
     {
-        for(unsigned int j = 0; j < _size * _size; ++j)
+        for (unsigned int j = 0; j < _size * _size; ++j)
         {
-            if(getCase(i, j) == value1)
+            if (getCase(i, j) == value1)
                 setCase(i, j, value2);
-            else if(getCase(i, j) == value2)
+            else if (getCase(i, j) == value2)
                 setCase(i, j, value1);
         }
     }
@@ -204,53 +203,53 @@ void Sudoku::swapValue(unsigned int value1, unsigned int value2)
 
 void Sudoku::shuffleGrid()
 {
-    for(int i = 0; i < pow(_size, 5); i++)
+    for (int i = 0; i < pow(_size, 5); i++)
     {
         int x1 = rand() % (_size * _size);
         int x2 = rand() % (_size * _size);
 
-        if((abs(x1 - x2) < _size ) && (x1 != x2 )&& (x1/_size == x2/_size))
+        if ((abs(x1 - x2) < _size) && (x1 != x2) && (x1 / _size == x2 / _size))
         {
             swapRows(x1, x2);
         }
-        else if(x1%_size == x2%_size && x1 != x2)
+        else if (x1 % _size == x2 % _size && x1 != x2)
         {
             for (unsigned int i = 0; i < _size; ++i)
-                swapRows(x1 - x1%_size + i, x2 - x2%_size + i);
+                swapRows(x1 - x1 % _size + i, x2 - x2 % _size + i);
         }
 
         x1 = rand() % (_size * _size);
         x2 = rand() % (_size * _size);
 
-        if((abs(x1 - x2) < _size ) && (x1 != x2 ) && (x1/_size == x2/_size))
+        if ((abs(x1 - x2) < _size) && (x1 != x2) && (x1 / _size == x2 / _size))
         {
             swapColumns(x1, x2);
         }
-        else if(x1%_size == x2%_size && x1 != x2)
+        else if (x1 % _size == x2 % _size && x1 != x2)
         {
             for (unsigned int i = 0; i < _size; ++i)
-                swapColumns(x1 - x1%_size + i, x2 - x2%_size + i);
+                swapColumns(x1 - x1 % _size + i, x2 - x2 % _size + i);
         }
 
         x1 = rand() % (_size * _size) + 1;
         x2 = rand() % (_size * _size) + 1;
 
-        if(x1 != x2)
+        if (x1 != x2)
         {
             swapValue(x1, x2);
-        }   
+        }
     }
 }
 
 bool Sudoku::placeRemarquableNumbers()
 {
     unsigned int missing = _grid.lastMissingNumber(0, 0);
-    for(unsigned int x = 0; x < _size * _size; x++)
+    for (unsigned int x = 0; x < _size * _size; x++)
     {
-        for(unsigned int y = 0; y < _size * _size; y++)
+        for (unsigned int y = 0; y < _size * _size; y++)
         {
             missing = _grid.lastMissingNumber(x, y);
-            if(getCase(x, y) == 0 && missing != 0)
+            if (getCase(x, y) == 0 && missing != 0)
             {
                 setCase(x, y, missing);
                 return true;
@@ -260,40 +259,55 @@ bool Sudoku::placeRemarquableNumbers()
     return false;
 }
 
-void Sudoku::solveLikeAPersonWouldDoOnAnEasyOne()
+void Sudoku::solve()
 {
-    //scan the Rows
-    for (unsigned int i = 0; i < _size ; i++)
+    do
     {
-        // create a vector with all the possible numbers
-        std::vector<unsigned int> missingNumbers;
-        for (unsigned int count = 1; count <= _size * _size; count++)
-            missingNumbers.push_back(count);
-        missingNumbers.push_back(_size * _size + 1);
+    } while (placeRemarquableNumbers() && !isSolved());
+    backtracking();
+}
 
-        //sweep the column and remove the already taken numbers
-        for (unsigned int x = 0; x < _size * _size; x++)
-        {
-            if (find(missingNumbers.begin(), missingNumbers.end(), getCase(x, i)) != missingNumbers.end())
-                missingNumbers.erase(find(missingNumbers.begin(), missingNumbers.end(), getCase(x, i)));
-        }
-        missingNumbers.pop_back();
+long long int Sudoku::getNbIteration()
+{
+    return _nbIteration;
+}
 
-        //check if i can place the number at only one place
-        for (unsigned int x = 0; x < _size * _size; x++)
+bool Sudoku::caseToTest(unsigned int &x, unsigned int &y)
+{
+    for (x = 0; x < _size * _size; x++)
+    {
+        for (y = 0; y < _size * _size; y++)
         {
-            if (getCase(x, i) == 0)
-            {
-                std::vector<unsigned int> possiblevalues;
-                for(auto it : missingNumbers)
-                {
-                    if(caseIsCorrect(x, i, it))
-                        possiblevalues.push_back(it);
-                      
-                }
-            }
+            if (getCase(x, y) == 0)
+                return true;
         }
     }
+    return false;
+}
 
+bool Sudoku::backtracking()
+{
+    _nbIteration++;
+    unsigned int x = 0;
+    unsigned int y = 0;
+    if (!caseToTest(x, y))
+        return true;
 
+    if (_nbIteration % 1000000 == 0)
+    {
+        system("clear");
+        std::cout << *this;
+    }
+
+    for (unsigned int i = 1; i <= _size * _size; i++)
+    {
+        if (caseIsCorrect(x, y, i))
+        {
+            setCase(x, y, i);
+            if (backtracking())
+                return true;
+            setCase(x, y, 0);
+        }
+    }
+    return false;
 }
