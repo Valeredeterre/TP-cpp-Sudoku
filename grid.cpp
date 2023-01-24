@@ -6,6 +6,7 @@ Grid::Grid(unsigned int size)
     _grid.resize(pow(_size, 4), 0);
 }
 
+
 unsigned int Grid::getCase(unsigned int x, unsigned int y) const
 {
     return _grid.at(y * _size * _size + x);
@@ -14,11 +15,6 @@ unsigned int Grid::getCase(unsigned int x, unsigned int y) const
 void Grid::setCase(unsigned int x, unsigned int y, unsigned int value)
 {
     _grid.at(y * _size * _size + x) = value;
-}
-
-void Grid::at(unsigned int n)
-{
-    _grid.at(n);
 }
 
 std::ostream &operator<<(std::ostream &os, const Grid &grid) // << overload to print the grid
@@ -134,6 +130,11 @@ unsigned int Grid::lastMissingInSquare(unsigned int x, unsigned int y) const
     return 0;
 }
 
+unsigned int Grid::getSize() const
+{
+    return _size;
+}
+
 unsigned int Grid::lastMissingNumber(unsigned int x, unsigned int y) const
 {
     unsigned int lastMissingInRow = this->lastMissingInRow(y);
@@ -148,10 +149,4 @@ unsigned int Grid::lastMissingNumber(unsigned int x, unsigned int y) const
         return lastMissingInSquare;
     else
         return 0;
-}
-
-
-void Grid::setCase(unsigned int size)
-{
-    _size = size;
 }

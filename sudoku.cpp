@@ -1,21 +1,26 @@
 #include "sudoku.h"
 
 Sudoku::Sudoku()
-    : _difficulty(1), _size(3), _nbIteration(0)
+    : _difficulty(1), _nbIteration(0)
 {
-    Grid _grid(3); // creartion of an grid of 'size' by 'size' squares with an dimention of 'size' by 'size'
+    _grid = Grid(3); // creartion of an grid of 'size' by 'size' squares with an dimention of 'size' by 'size'
 }
 
 Sudoku::Sudoku(unsigned int difficulty)
-    : _difficulty(difficulty), _size(3), _nbIteration(0)
+    : _difficulty(difficulty), _nbIteration(0)
 {
-    Grid _grid(_size); // creartion of an grid of 'size' by 'size' squares with an dimention of 'size' by 'size'
+    _grid = Grid(3); // creartion of an grid of 'size' by 'size' squares with an dimention of 'size' by 'size'
 }
 
 Sudoku::Sudoku(unsigned int difficulty, unsigned int size)
-    : _difficulty(difficulty), _size(size), _nbIteration(0)
+    : _difficulty(difficulty), _nbIteration(0)
 {
-    Grid _grid(size);
+   _grid = Grid(size);
+}
+
+std::vector<unsigned int>& Sudoku::getGrid()
+{
+    return _grid.getGrid();
 }
 
 unsigned int Sudoku::getCase(unsigned int x, unsigned int y) const
@@ -36,10 +41,10 @@ std::ostream &operator<<(std::ostream &os, const Sudoku &sudoku) // << overload 
 
 bool Sudoku::checkElementarySquare(unsigned int x, unsigned int y, unsigned int value) const
 {
-    unsigned int xStartElementarySquare = x - x % _size; // find the coordonate of the elementary square
-    unsigned int yStartElementarySquare = y - y % _size;
-    for (unsigned int i = 0; i < _size; ++i)
-        for (unsigned int j = 0; j < _size; ++j)
+    unsigned int xStartElementarySquare = x - x % _grid.getSize(); // find the coordonate of the elementary square
+    unsigned int yStartElementarySquare = y - y % _grid.getSize();
+    for (unsigned int i = 0; i < _grid.getSize(); ++i)
+        for (unsigned int j = 0; j < _grid.getSize(); ++j)
             if (getCase(xStartElementarySquare + i, yStartElementarySquare + j) == value)
                 return false; // if the case we want to add is already in the square we return false
     return true;
@@ -47,7 +52,7 @@ bool Sudoku::checkElementarySquare(unsigned int x, unsigned int y, unsigned int 
 
 bool Sudoku::checkRow(unsigned int x, unsigned int y, unsigned int value) const
 {
-    for (unsigned int i = 0; i < _size * _size; ++i)
+    for (unsigned int i = 0; i < _grid.getSize() * _grid.getSize(); ++i)
         if (getCase(i, y) == value)
             return false; // if the case we want to add is already in the row we return false
     return true;
@@ -55,7 +60,7 @@ bool Sudoku::checkRow(unsigned int x, unsigned int y, unsigned int value) const
 
 bool Sudoku::checkColumn(unsigned int x, unsigned int y, unsigned int value) const
 {
-    for (unsigned int i = 0; i < _size * _size; ++i)
+    for (unsigned int i = 0; i < _grid.getSize() * _grid.getSize(); ++i)
         if (getCase(x, i) == value)
             return false; // if the case we want to add is already in the column we return false
     return true;
@@ -73,18 +78,18 @@ void Sudoku::genrateStartingGrid(bool removeValue)
 
     // create a valid grid
     int i = 0;
-    for (int n = 0; n < pow(_size, 4); n++)
+    for (int n = 0; n < pow(_grid.getSize(), 4); n++)
     {
-        if (n % (_size * _size) == 0 && n != 0)
-            i += _size;
-        if (n % (_size * _size * _size) == 0 && n != 0)
+        if (n % (_grid.getSize() * _grid.getSize()) == 0 && n != 0)
+            i += _grid.getSize();
+        if (n % (_grid.getSize() * _grid.getSize() * _grid.getSize()) == 0 && n != 0)
             i++;
         _grid.getGrid().at(n) = n + i;
     }
 
-    for (int n = 0; n < pow(_size, 4); n++)
+    for (int n = 0; n < pow(_grid.getSize(), 4); n++)
     {
-        _grid.getGrid().at(n) = _grid.getGrid().at(n) % (_size * _size) + 1;
+        _grid.getGrid().at(n) = _grid.getGrid().at(n) % (_grid.getSize() * _grid.getSize()) + 1;
     }
     shuffleGrid();
 
@@ -97,14 +102,14 @@ void Sudoku::genrateStartingGrid(bool removeValue)
             _difficulty = 6;
         if (_difficulty < 1)
             _difficulty = 1;
-        unsigned int amountToGenerate = int(possibleValue.at(_difficulty - 1) * pow(_size, 4));
-        for (unsigned int i = 0; i < pow(_size, 4) - 300; i++)
+        unsigned int amountToGenerate = int(possibleValue.at(_difficulty - 1) * pow(_grid.getSize(), 4));
+        for (unsigned int i = 0; i < pow(_grid.getSize(), 4) - amountToGenerate; i++)
         {
             unsigned int x = 0, y = 0;
             do
             {
-                x = rand() % (_size * _size);
-                y = rand() % (_size * _size);
+                x = rand() % (_grid.getSize() * _grid.getSize());
+                y = rand() % (_grid.getSize() * _grid.getSize());
             } while (getCase(x, y) == 0);
             setCase(x, y, 0);
         }
@@ -125,7 +130,7 @@ void Sudoku::playTheGame() //! not usefull and coded awfully but it's fun
                 std::cout << "Enter x: ";
                 std::cin >> x;
                 std::cout << std::endl;
-            } while (!(x >= 0 && x < _size * _size));
+            } while (!(x >= 0 && x < _grid.getSize() * _grid.getSize()));
             do
             {
                 std::cout << "Enter y: ";
@@ -153,9 +158,9 @@ bool Sudoku::isSolved()
 
 bool Sudoku::checkifSudokuIsCorrect()
 {
-    for (unsigned int i = 0; i < _size * _size; ++i)
+    for (unsigned int i = 0; i < _grid.getSize() * _grid.getSize(); ++i)
     {
-        for (unsigned int j = 0; j < _size * _size; ++j)
+        for (unsigned int j = 0; j < _grid.getSize() * _grid.getSize(); ++j)
         {
             int tmp = getCase(i, j);
             setCase(i, j, 0);
@@ -169,7 +174,7 @@ bool Sudoku::checkifSudokuIsCorrect()
 
 void Sudoku::swapRows(unsigned int row1, unsigned int row2)
 {
-    for (unsigned int i = 0; i < _size * _size; ++i)
+    for (unsigned int i = 0; i < _grid.getSize() * _grid.getSize(); ++i)
     {
         unsigned int tmp = getCase(i, row1);
         setCase(i, row1, getCase(i, row2));
@@ -179,7 +184,7 @@ void Sudoku::swapRows(unsigned int row1, unsigned int row2)
 
 void Sudoku::swapColumns(unsigned int column1, unsigned int column2)
 {
-    for (unsigned int i = 0; i < _size * _size; ++i)
+    for (unsigned int i = 0; i < _grid.getSize() * _grid.getSize(); ++i)
     {
         unsigned int tmp = getCase(column1, i);
         setCase(column1, i, getCase(column2, i));
@@ -189,9 +194,9 @@ void Sudoku::swapColumns(unsigned int column1, unsigned int column2)
 
 void Sudoku::swapValue(unsigned int value1, unsigned int value2)
 {
-    for (unsigned int i = 0; i < _size * _size; ++i)
+    for (unsigned int i = 0; i < _grid.getSize() * _grid.getSize(); ++i)
     {
-        for (unsigned int j = 0; j < _size * _size; ++j)
+        for (unsigned int j = 0; j < _grid.getSize() * _grid.getSize(); ++j)
         {
             if (getCase(i, j) == value1)
                 setCase(i, j, value2);
@@ -203,36 +208,36 @@ void Sudoku::swapValue(unsigned int value1, unsigned int value2)
 
 void Sudoku::shuffleGrid()
 {
-    for (int i = 0; i < pow(_size, 5); i++)
+    for (int i = 0; i < pow(_grid.getSize(), 5); i++)
     {
-        int x1 = rand() % (_size * _size);
-        int x2 = rand() % (_size * _size);
+        int x1 = rand() % (_grid.getSize() * _grid.getSize());
+        int x2 = rand() % (_grid.getSize() * _grid.getSize());
 
-        if ((abs(x1 - x2) < _size) && (x1 != x2) && (x1 / _size == x2 / _size))
+        if ((abs(x1 - x2) < _grid.getSize()) && (x1 != x2) && (x1 / _grid.getSize() == x2 / _grid.getSize()))
         {
             swapRows(x1, x2);
         }
-        else if (x1 % _size == x2 % _size && x1 != x2)
+        else if (x1 % _grid.getSize() == x2 % _grid.getSize() && x1 != x2)
         {
-            for (unsigned int i = 0; i < _size; ++i)
-                swapRows(x1 - x1 % _size + i, x2 - x2 % _size + i);
+            for (unsigned int i = 0; i < _grid.getSize(); ++i)
+                swapRows(x1 - x1 % _grid.getSize() + i, x2 - x2 % _grid.getSize() + i);
         }
 
-        x1 = rand() % (_size * _size);
-        x2 = rand() % (_size * _size);
+        x1 = rand() % (_grid.getSize() * _grid.getSize());
+        x2 = rand() % (_grid.getSize() * _grid.getSize());
 
-        if ((abs(x1 - x2) < _size) && (x1 != x2) && (x1 / _size == x2 / _size))
+        if ((abs(x1 - x2) < _grid.getSize()) && (x1 != x2) && (x1 / _grid.getSize() == x2 / _grid.getSize()))
         {
             swapColumns(x1, x2);
         }
-        else if (x1 % _size == x2 % _size && x1 != x2)
+        else if (x1 % _grid.getSize() == x2 % _grid.getSize() && x1 != x2)
         {
-            for (unsigned int i = 0; i < _size; ++i)
-                swapColumns(x1 - x1 % _size + i, x2 - x2 % _size + i);
+            for (unsigned int i = 0; i < _grid.getSize(); ++i)
+                swapColumns(x1 - x1 % _grid.getSize() + i, x2 - x2 % _grid.getSize() + i);
         }
 
-        x1 = rand() % (_size * _size) + 1;
-        x2 = rand() % (_size * _size) + 1;
+        x1 = rand() % (_grid.getSize() * _grid.getSize()) + 1;
+        x2 = rand() % (_grid.getSize() * _grid.getSize()) + 1;
 
         if (x1 != x2)
         {
@@ -244,9 +249,9 @@ void Sudoku::shuffleGrid()
 bool Sudoku::placeRemarquableNumbers()
 {
     unsigned int missing = _grid.lastMissingNumber(0, 0);
-    for (unsigned int x = 0; x < _size * _size; x++)
+    for (unsigned int x = 0; x < _grid.getSize() * _grid.getSize(); x++)
     {
-        for (unsigned int y = 0; y < _size * _size; y++)
+        for (unsigned int y = 0; y < _grid.getSize() * _grid.getSize(); y++)
         {
             missing = _grid.lastMissingNumber(x, y);
             if (getCase(x, y) == 0 && missing != 0)
@@ -261,9 +266,7 @@ bool Sudoku::placeRemarquableNumbers()
 
 void Sudoku::solve()
 {
-    do
-    {
-    } while (placeRemarquableNumbers() && !isSolved());
+    while (placeRemarquableNumbers() && !isSolved());
     backtracking();
 }
 
@@ -272,11 +275,11 @@ long long int Sudoku::getNbIteration()
     return _nbIteration;
 }
 
-bool Sudoku::caseToTest(unsigned int &x, unsigned int &y)
+bool Sudoku::caseToBacktrack(unsigned int &x, unsigned int &y)
 {
-    for (x = 0; x < _size * _size; x++)
+    for (x = 0; x < _grid.getSize() * _grid.getSize(); x++)
     {
-        for (y = 0; y < _size * _size; y++)
+        for (y = 0; y < _grid.getSize() * _grid.getSize(); y++)
         {
             if (getCase(x, y) == 0)
                 return true;
@@ -290,16 +293,15 @@ bool Sudoku::backtracking()
     _nbIteration++;
     unsigned int x = 0;
     unsigned int y = 0;
-    if (!caseToTest(x, y))
+    if (!caseToBacktrack(x, y))
         return true;
 
-    if (_nbIteration % 1000000 == 0)
-    {
-        system("clear");
-        std::cout << *this;
-    }
+    if (_nbIteration % 100000  == 0)
+        std::cout << ".";
+    if (_nbIteration % 5000000 == 0)
+        std::cout << "\n" << _nbIteration << " iterations";
 
-    for (unsigned int i = 1; i <= _size * _size; i++)
+    for (unsigned int i = 1; i <= _grid.getSize() * _grid.getSize(); i++)
     {
         if (caseIsCorrect(x, y, i))
         {

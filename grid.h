@@ -10,13 +10,12 @@
 class Grid
 {
 public:
-    Grid(unsigned int size = 5);
+    Grid(unsigned int size = 3);
     friend std::ostream& operator<<(std::ostream& os, const Grid& grid);
     unsigned int getCase(unsigned int x, unsigned int y) const;
     void setCase(unsigned int x, unsigned int y, unsigned int value);
-    void at(unsigned int n);
     std::vector<unsigned int>& getGrid();
-    void setCase(unsigned int size);
+    unsigned int getSize() const;
     unsigned int lastMissingNumber(unsigned int x, unsigned int y) const;
 private:
     unsigned int lastMissingInRow(unsigned int y) const;

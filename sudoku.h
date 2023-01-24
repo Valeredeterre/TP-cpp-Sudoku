@@ -17,12 +17,13 @@ public:
     void playTheGame();
     bool checkifSudokuIsCorrect();
     void setCase(unsigned int x, unsigned int y, unsigned int value);
-    bool caseToTest(unsigned int& x,unsigned int& y);
-    bool backtracking();
     long long int getNbIteration();
+    std::vector<unsigned int>& getGrid();
 
 private:
     //private methods
+    bool backtracking();
+    bool caseToBacktrack(unsigned int& x,unsigned int& y);
     unsigned int getCase(unsigned int x, unsigned int y) const;
     bool caseIsCorrect(unsigned int x, unsigned int y, unsigned int value) const;
     bool checkElementarySquare(unsigned int x, unsigned int y, unsigned int value) const;
@@ -36,7 +37,6 @@ private:
 
     //private variables ┬┴┬┴┤ ͜ʖ ͡°) ├┬┴┬┴
     unsigned int _difficulty;
-    unsigned int _size;
     long long int _nbIteration;
     Grid _grid;
 };
