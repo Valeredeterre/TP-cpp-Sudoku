@@ -1,6 +1,6 @@
 #include "grid.h"
 
-Grid::Grid(unsigned int size)
+Grid::Grid(unsigned int size, unsigned int difficulty)
     : _size(size)
 {
     _grid.resize(pow(_size, 4), 0);
@@ -87,7 +87,7 @@ unsigned int Grid::lastMissingInColumn(unsigned int x) const
         missingNumbers.push_back(i);
     missingNumbers.push_back(_size * _size + 1);
 
-    //sweep the column and remove the already taken numbers
+    //sweep throught the column and remove the already taken numbers
     for (unsigned int y = 0; y < _size * _size; y++)
     {
         if (find(missingNumbers.begin(), missingNumbers.end(), getCase(x, y)) != missingNumbers.end())
@@ -101,6 +101,130 @@ unsigned int Grid::lastMissingInColumn(unsigned int x) const
 
     //if not return 0
     return 0;
+}
+
+unsigned int Grid::getDifficulty() const
+{
+    return _difficulty;
+}
+
+void Grid::generateStartingGrid(bool removeValue)
+{
+    srand(time(NULL)); // initialisation of the randomizer
+
+    // fill the grid
+    int i = 0;
+    for (int n = 0; n < pow(_size, 4); n++)
+    {
+        if (n % (_size * _size) == 0 && n != 0)
+            i += _size;
+        if (n % (_size * _size * _size) == 0 && n != 0)
+            i++;
+        _grid.at(n) = n + i;
+    }
+
+    for (int n = 0; n < pow(_size, 4); n++)
+    {
+        // set the range of value between 1 and _size * _size to set the value in the good range
+        _grid.at(n) = _grid.at(n) % (_size * _size) + 1;
+    }
+    shuffleGrid();
+
+    // remove random numbers to match the difficulty
+    if (removeValue)
+    {
+        std::array<float, 7> possibleValue = {0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2};
+
+        if (_difficulty > 6)
+            _difficulty = 6;
+        if (_difficulty < 1)
+            _difficulty = 1;
+        unsigned int amountToGenerate = int(possibleValue.at(_difficulty - 1) * pow(_size, 4));
+        for (unsigned int i = 0; i < pow(_size, 4) - amountToGenerate; i++)
+        {
+            unsigned int x = 0, y = 0;
+            do
+            {
+                x = rand() % (_size * _size);
+                y = rand() % (_size * _size);
+            } while (getCase(x, y) == 0);
+            setCase(x, y, 0);
+        }
+    }
+}
+
+void Grid::shuffleGrid()
+{
+    for (int i = 0; i < pow(_size, 5); i++)
+    {
+        int x1 = rand() % (_size * _size);
+        int x2 = rand() % (_size * _size);
+
+        if ((abs(x1 - x2) < _size) && (x1 != x2) && (x1 / _size == x2 / _size))
+        {
+            swapRows(x1, x2);
+        }
+        else if (x1 % _size == x2 % _size && x1 != x2)
+        {
+            for (unsigned int i = 0; i < _size; ++i)
+                swapRows(x1 - x1 % _size + i, x2 - x2 % _size + i);
+        }
+
+        x1 = rand() % (_size * _size);
+        x2 = rand() % (_size * _size);
+
+        if ((abs(x1 - x2) < _size) && (x1 != x2) && (x1 / _size == x2 / _size))
+        {
+            swapColumns(x1, x2);
+        }
+        else if (x1 % _size == x2 % _size && x1 != x2)
+        {
+            for (unsigned int i = 0; i < _size; ++i)
+                swapColumns(x1 - x1 % _size + i, x2 - x2 % _size + i);
+        }
+
+        x1 = rand() % (_size * _size) + 1;
+        x2 = rand() % (_size * _size) + 1;
+
+        if (x1 != x2)
+        {
+            swapValue(x1, x2);
+        }
+    }
+}
+
+void Grid::swapRows(unsigned int row1, unsigned int row2)
+{
+    for (unsigned int i = 0; i < _size * _size; ++i)
+    {
+        unsigned int tmp = getCase(i, row1);
+        setCase(i, row1, getCase(i, row2));
+        setCase(i, row2, tmp);
+    }
+}
+
+void Grid::swapColumns(unsigned int column1, unsigned int column2)
+{
+    for (unsigned int i = 0; i < _size * _size; ++i)
+    {
+        unsigned int tmp = getCase(column1, i);
+        setCase(column1, i, getCase(column2, i));
+        setCase(column2, i, tmp);
+    }
+}
+
+void Grid::swapValue(unsigned int value1, unsigned int value2)
+{
+    for (unsigned int i = 0; i < _size * _size; ++i)
+    {
+        for (unsigned int j = 0; j < _size * _size; ++j)
+        {
+            if (getCase(i, j) == value1)
+                setCase(i, j, value2);
+            else if (getCase(i, j) == value2)
+                setCase(i, j, value1);
+        }
+    }
 }
 
 unsigned int Grid::lastMissingInSquare(unsigned int x, unsigned int y) const

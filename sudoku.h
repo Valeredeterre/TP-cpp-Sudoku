@@ -11,32 +11,28 @@ public:
     //methods
     friend std::ostream& operator<<(std::ostream& os, const Sudoku& sudoku);
     
-    void genrateStartingGrid(bool removeValue);
     void solve();
     bool isSolved();
     void playTheGame();
     bool checkifSudokuIsCorrect();
-    void setCase(unsigned int x, unsigned int y, unsigned int value);
     long long int getNbIteration();
     std::vector<unsigned int>& getGrid();
+    void genrateStartingGrid(bool removeValue);
+    void setCase(unsigned int x, unsigned int y, unsigned int value);
 
 private:
     //private methods
+    void shuffleGrid();
     bool backtracking();
+    bool placeRemarquableNumbers();
     bool caseToBacktrack(unsigned int& x,unsigned int& y);
     unsigned int getCase(unsigned int x, unsigned int y) const;
-    bool caseIsCorrect(unsigned int x, unsigned int y, unsigned int value) const;
-    bool checkElementarySquare(unsigned int x, unsigned int y, unsigned int value) const;
     bool checkRow(unsigned int x, unsigned int y, unsigned int value) const;
     bool checkColumn(unsigned int x, unsigned int y, unsigned int value) const;
-    void swapColumns(unsigned int column1, unsigned int column2);
-    void swapRows(unsigned int row1, unsigned int row2);
-    void swapValue(unsigned int value1, unsigned int value2);
-    void shuffleGrid();
-    bool placeRemarquableNumbers();
+    bool caseIsCorrect(unsigned int x, unsigned int y, unsigned int value) const;
+    bool checkElementarySquare(unsigned int x, unsigned int y, unsigned int value) const;
 
     //private variables ┬┴┬┴┤ ͜ʖ ͡°) ├┬┴┬┴
-    unsigned int _difficulty;
-    long long int _nbIteration;
     Grid _grid;
+    long long int _nbIteration;
 };
