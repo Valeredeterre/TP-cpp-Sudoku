@@ -11,11 +11,26 @@ class Grid
 {
 public:
     //constructor
+    /*!
+     *  \brief Default constructor of the Grid class.
+     *  \param difficulty : Define the amount of case who need to be removed during the generation.
+     *  \param size : The size of the elementary squares.
+     */
     Grid(unsigned int size = 3, unsigned int difficulty = 3);
 
     //methods
+    /*!
+     *  \brief Getter for the _size attribute.
+     *  \return Return the size if the grid.
+     */
     unsigned int getSize() const;
+
+    /*!
+     *  \brief Getter for the difficulty attribute.
+     *  \return Return the size if the grid.
+     */
     unsigned int getDifficulty() const;
+
     std::vector<unsigned int>& getGrid();
     void generateStartingGrid(bool removeValue);
     unsigned int getCase(unsigned int x, unsigned int y) const;
@@ -35,6 +50,6 @@ private:
 
     //private variables
     std::vector<unsigned int> _grid;
-    unsigned int _difficulty;
-    unsigned int _size;
+    const unsigned int _difficulty;
+    const unsigned int _size;
 };

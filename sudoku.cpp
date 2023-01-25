@@ -75,10 +75,9 @@ bool Sudoku::caseIsCorrect(unsigned int x, unsigned int y, unsigned int value) c
     // if the 3 sudoku rules are respected and the case is emplty we can add the case here
 }
 
-void Sudoku::playTheGame() //! not usefull and coded awfully but it's fun
+void Sudoku::playTheGame()
 {
     unsigned int x, y, value;
-    do
     {
         std::cout << std::endl
                   << *this << std::endl;
