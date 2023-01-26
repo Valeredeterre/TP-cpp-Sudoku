@@ -1,8 +1,12 @@
 #include "grid.h"
 
 Grid::Grid(unsigned int size, unsigned int difficulty)
-    : _size(size)
+        : _size(size)
 {
+    if (difficulty > 7)
+        _difficulty = 7;
+    if (difficulty < 1)
+        _difficulty = 1;
     _grid.resize(pow(_size, 4), 0);
 }
 
@@ -134,11 +138,6 @@ void Grid::generateStartingGrid(bool removeValue)
     if (removeValue)
     {
         std::array<float, 7> possibleValue = {0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2};
-
-        if (_difficulty > 6)
-            _difficulty = 6;
-        if (_difficulty < 1)
-            _difficulty = 1;
         unsigned int amountToGenerate = int(possibleValue.at(_difficulty - 1) * pow(_size, 4));
         for (unsigned int i = 0; i < pow(_size, 4) - amountToGenerate; i++)
         {
