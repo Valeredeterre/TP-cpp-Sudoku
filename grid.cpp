@@ -7,6 +7,7 @@ Grid::Grid(unsigned int size, unsigned int difficulty)
         _difficulty = 7;
     if (difficulty < 1)
         _difficulty = 1;
+    else _difficulty = difficulty;
     _grid.resize(pow(_size, 4), 0);
 }
 

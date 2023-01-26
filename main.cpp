@@ -2,7 +2,7 @@
 
 int main()
 {
-    Sudoku sudoku(7, 4);
+    Sudoku sudoku(4, 3);
 
     /*std::vector<unsigned int> grilleDeBase = 
     {
