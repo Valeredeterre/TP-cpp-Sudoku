@@ -78,6 +78,7 @@ bool Sudoku::caseIsCorrect(unsigned int x, unsigned int y, unsigned int value) c
 void Sudoku::playTheGame()
 {
     unsigned int x, y, value;
+    do
     {
         std::cout << std::endl
                   << *this << std::endl;
